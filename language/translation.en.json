@@ -1,0 +1,7 @@
+{
+    "ERR_GENRIC_SYNTAX": "JSON request could not parsed.",
+    "ERR_BAD_REQUEST": "Bad Request",
+    "ERR_PERMISSION_ERROR": "You are unauthorized user",
+    "ERR_USER_NOT_FOUND": "User is not verfied or deactivated by administrator",
+    "MSG_USER_LOGIN_SUCCESS": "You are successfully logged in"    
+}

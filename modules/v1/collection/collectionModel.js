@@ -1,0 +1,18 @@
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+const schemaEntity = {
+	email: {
+        type: String,
+        default: null
+	},
+	roles: {
+		type: Object,
+		ref: 'Role'
+	},	
+};
+
+const UserSchema = new Schema(schemaEntity, { timestamps: true });
+
+mongoose.model('User', UserSchema);
+module.exports = exports = mongoose.model('User', UserSchema);

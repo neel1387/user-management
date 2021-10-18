@@ -1,0 +1,29 @@
+{
+  "name": "user-roles",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Neel",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^10.0.0",
+    "enum": "^3.0.4",
+    "express": "^4.17.1",
+    "express-validator": "^6.13.0",
+    "http": "0.0.1-security",
+    "jm-ez-l10n": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
+    "mongoose": "^6.0.11",
+    "morgan": "^1.10.0",
+    "path": "^0.12.7",
+    "winston": "^3.3.3"
+  }
+}
