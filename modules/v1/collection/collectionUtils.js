@@ -10,8 +10,9 @@ collectionUtils.listCollection = async (obj) => {
     try {
       const { queryParams } = obj;
       const { limit, offset } = utils.validatePaginate(queryParams);
+      const total =  await Collection.find().count();
       const collections = await Collection.find().sort('-_id').limit(limit).skip(offset);
-      return collections;
+      return { total, collections };
     } catch (error) {
       logger.error('[ERROR] From listCollection in collectionUtils', error);
       throw error;

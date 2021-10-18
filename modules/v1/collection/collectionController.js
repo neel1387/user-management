@@ -43,18 +43,6 @@ collectionCtr.editCollection = async (req, res) => {
   }
 };
 
-collectionCtr.editCollection = async (req, res) => {
-  try {
-    const result = await collectionUtils.editCollection({ body: req.body, user: req.user });
-    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_COLLECTION_UPDATED') });
-    return res.status(STANDARD.SUCCESS).json(data);
-  } catch (err) {
-    logger.error('[ERROR] From Main editCollection API catch', err);
-    const { code, error } = errorUtil.generateError(err);
-    return res.status(code).json({ error, code });
-  }
-};
-
 collectionCtr.deleteCollection = async (req, res) => {
   try {
     await collectionUtils.deleteCollection({ body: req.body, user: req.user });

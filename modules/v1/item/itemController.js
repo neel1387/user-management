@@ -43,18 +43,6 @@ itemCtr.editItem = async (req, res) => {
   }
 };
 
-itemCtr.editItem = async (req, res) => {
-  try {
-    const result = await itemUtils.editItem({ body: req.body, user: req.user });
-    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_ITEM_UPDATED') });
-    return res.status(STANDARD.SUCCESS).json(data);
-  } catch (err) {
-    logger.error('[ERROR] From Main editItem API catch', err);
-    const { code, error } = errorUtil.generateError(err);
-    return res.status(code).json({ error, code });
-  }
-};
-
 itemCtr.deleteItem = async (req, res) => {
   try {
     await itemUtils.deleteItem({ body: req.body, user: req.user });

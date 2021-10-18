@@ -28,6 +28,14 @@ customValidators.isValidMongoID = (str) => {
   return false;
 };
 
+customValidators.isValidMongoIDs = (str) => {
+  if (str && Array.isArray(str) && str.length > 0) {
+    // Here we use .every because it will break if validation goes fail
+    return str.every((w) => { return customValidators.isValidMongoID(w); });
+  }
+  return false;
+};
+
 validateUtils.customValidators = customValidators;
 
 module.exports = validateUtils;

@@ -15,6 +15,7 @@ router.use((req, res, next) => {
 router.use('/user', require('./user/userRoute'));
 router.use('/collection', require('./collection/collectionRoute'));
 router.use('/item', require('./item/itemRoute'));
+router.use('/group', require('./group/groupRoute'));
 
 router.all('/*', (req, res) => {
   logger.info('Error Log');

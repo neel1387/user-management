@@ -11,8 +11,9 @@ itemUtils.listItem = async (obj) => {
     try {
         const { queryParams } = obj;
         const { limit, offset } = utils.validatePaginate(queryParams);
+        const total =  await Item.find().count();
         const items = await Item.find().sort('-_id').limit(limit).skip(offset);
-        return items;
+        return { total, items };
     } catch (error) {
         logger.error('[ERROR] From listItem in itemUtils', error);
         throw error;

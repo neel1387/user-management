@@ -1,24 +1,38 @@
 const express = require('express');
-const userCtr = require('./userController');
-const userValidator = require('./userValidationRules');
+const groupCtr = require('./groupController');
+const groupValidator = require('./groupValidationRules');
 const { validationHandler } = require('../../../helper/validate');
-const userMiddleware = require('./userMiddleware');
 
-const userRouter = express.Router();
+const groupRouter = express.Router();
 
-// Create Mentee
-// const createMentee = [
-//   userValidator.createMenteeValidator(),
-//   validationHandler,
-//   userCtr.createMentee,
-// ];
-// userRouter.post('/create', createMentee);
+// List of Group
+const listGroup = [
+    groupCtr.listGroup,
+];
+groupRouter.get('/list', listGroup);
 
-// const login = [
-//   userValidator.loginValidator(),
-//   validationHandler,
-//   userCtr.login,
-// ];
-// userRouter.post('/login', login);
+// Create Group
+const createGroup = [
+    groupValidator.createGroupValidator(),
+    validationHandler,
+    groupCtr.createGroup,
+];
+groupRouter.post('/create', createGroup);
 
-module.exports = userRouter;
+// Edit Group
+const editGroup = [
+    groupValidator.editGroupValidator(),
+    validationHandler,
+    groupCtr.editGroup,
+];
+groupRouter.put('/edit', editGroup);
+
+// Delete Group
+const deleteGroup = [
+    groupValidator.deleteGroupValidator(),
+    validationHandler,
+    groupCtr.deleteGroup,
+];
+groupRouter.delete('/delete', deleteGroup);
+
+module.exports = groupRouter;
