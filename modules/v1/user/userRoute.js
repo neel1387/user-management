@@ -6,19 +6,42 @@ const userMiddleware = require('./userMiddleware');
 
 const userRouter = express.Router();
 
-// Create Mentee
-// const createMentee = [
-//   userValidator.createMenteeValidator(),
-//   validationHandler,
-//   userCtr.createMentee,
-// ];
-// userRouter.post('/create', createMentee);
+// List of User
+const listUser = [
+    userCtr.listUser,
+];
+userRouter.get('/list', listUser);
 
-// const login = [
-//   userValidator.loginValidator(),
-//   validationHandler,
-//   userCtr.login,
-// ];
-// userRouter.post('/login', login);
+// Login
+const login = [
+    itemValidator.loginValidator(),
+    validationHandler,
+    userCtr.login,
+];
+userRouter.post('/create', login);
+
+// Create User
+const createUser = [
+    itemValidator.createUserValidator(),
+    validationHandler,
+    userCtr.createUser,
+];
+userRouter.post('/create', createUser);
+
+// Edit User
+const editUser = [
+    itemValidator.editUserValidator(),
+    validationHandler,
+    userCtr.editUser,
+];
+userRouter.put('/edit', editUser);
+
+// Delete User
+const deleteUser = [
+    itemValidator.deleteUserValidator(),
+    validationHandler,
+    userCtr.deleteUser,
+];
+userRouter.delete('/delete', deleteUser);
 
 module.exports = userRouter;

@@ -5,11 +5,13 @@ const schemaEntity = {
 	email: {
         type: String,
         default: null
-	},
-	roles: {
-		type: Object,
-		ref: 'Role'
 	},	
+	roles: [{
+		roleId: {
+			type: Schema.ObjectId,
+			ref: 'Role'
+		}
+	}],
 };
 
 const UserSchema = new Schema(schemaEntity, { timestamps: true });

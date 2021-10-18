@@ -47,7 +47,7 @@ middleware.authenticateUser = async (req, isAdmin, isOptional) => {
       code: ERROR401.CODE,
     };
     const errorObj = {
-      error: req.t('ERR_USER_NOT_FOUND'),
+      error: req.t('ERR_USER_NO_ACCESS'),
       code: ERROR401.CODE,
     };
     const token = req.headers.token || req.body.token || req.query.token || req.headers['x-access-token'];

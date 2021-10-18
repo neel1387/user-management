@@ -7,30 +7,52 @@ const { STANDARD } = require('../../../constants/common');
 
 const userCtr = {};
 
-// Create/Complete User Profile 
-userCtr.createMentee = async (req, res) => {
+userCtr.listUser = async (req, res) => {
   try {
-    const result = await userUtils.createMentee(req.body);
-    const data = responseBuilder.successWithData(result);
+    const result = await userUtils.listUser({ queryParams: req.query, user: req.user });
+    const data = responseBuilder.successWithData({ result });
     return res.status(STANDARD.SUCCESS).json(data);
   } catch (err) {
-    logger.error('[ERROR] From Main createMentee API catch', err);
+    logger.error('[ERROR] From Main listUser API catch', err);
     const { code, error } = errorUtil.generateError(err);
     return res.status(code).json({ error, code });
   }
 };
 
-userCtr.login = async (req, res) => {
+userCtr.createUser = async (req, res) => {
   try {
-    const result = await userUtils.login(req.body);
-    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_USER_LOGIN_SUCCESS') });
+    const result = await userUtils.createUser({ body: req.body, user: req.user });
+    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_USER_CREATED') });
     return res.status(STANDARD.SUCCESS).json(data);
   } catch (err) {
-    logger.error('[ERROR] From Main login API catch', err);
+    logger.error('[ERROR] From Main createUser API catch', err);
     const { code, error } = errorUtil.generateError(err);
     return res.status(code).json({ error, code });
   }
 };
 
+userCtr.editUser = async (req, res) => {
+  try {
+    const result = await userUtils.editUser({ body: req.body, user: req.user });
+    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_USER_UPDATED') });
+    return res.status(STANDARD.SUCCESS).json(data);
+  } catch (err) {
+    logger.error('[ERROR] From Main editUser API catch', err);
+    const { code, error } = errorUtil.generateError(err);
+    return res.status(code).json({ error, code });
+  }
+};
+
+userCtr.deleteUser = async (req, res) => {
+  try {
+    await userUtils.deleteUser({ body: req.body, user: req.user });
+    const data = responseBuilder.successWithData({ msg: req.t('MSG_USER_DELETED') });
+    return res.status(STANDARD.SUCCESS).json(data);
+  } catch (err) {
+    logger.error('[ERROR] From Main deleteUser API catch', err);
+    const { code, error } = errorUtil.generateError(err);
+    return res.status(code).json({ error, code });
+  }
+};
 
 module.exports = userCtr;

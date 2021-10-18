@@ -28,6 +28,8 @@ app.use(cors());
 
 // Database Init
 require('./databse');
+// It will add default seeds
+require('../helper/custom_seed');
 
 app.use('/api', require('../routes'));
 
