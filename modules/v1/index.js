@@ -13,6 +13,8 @@ router.use((req, res, next) => {
 
 // Routes
 router.use('/user', require('./user/userRoute'));
+router.use('/collection', require('./collection/collectionRoute'));
+router.use('/item', require('./item/itemRoute'));
 
 router.all('/*', (req, res) => {
   logger.info('Error Log');

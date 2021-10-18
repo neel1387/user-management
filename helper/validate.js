@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const { ERROR422 } = require('../constants/common');
+const mongoose = require('mongoose');
 
 const validateUtils = {};
 
@@ -18,6 +19,13 @@ const customValidators = {};
 
 customValidators.isPositiveInt = (str) => {
   return !!(str && str > 0);
+};
+
+customValidators.isValidMongoID = (str) => {
+  if (str) {
+    return mongoose.Types.ObjectId.isValid(`${str}`);
+  }
+  return false;
 };
 
 validateUtils.customValidators = customValidators;

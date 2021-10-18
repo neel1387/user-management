@@ -1,36 +1,70 @@
 const errorUtil = require('../../../helper/errorUtil');
-const userUtils = require('./userUtils');
+const itemUtils = require('./itemUtils');
 const logger = require('../../../helper/logger');
 const responseBuilder = require('../../../helper/responseBuilder');
 
 const { STANDARD } = require('../../../constants/common');
 
-const userCtr = {};
+const itemCtr = {};
 
-// Create/Complete User Profile 
-userCtr.createMentee = async (req, res) => {
+itemCtr.listItem = async (req, res) => {
   try {
-    const result = await userUtils.createMentee(req.body);
-    const data = responseBuilder.successWithData(result);
+    const result = await itemUtils.listItem({ queryParams: req.query, user: req.user });
+    const data = responseBuilder.successWithData({ result });
     return res.status(STANDARD.SUCCESS).json(data);
   } catch (err) {
-    logger.error('[ERROR] From Main createMentee API catch', err);
+    logger.error('[ERROR] From Main listItem API catch', err);
     const { code, error } = errorUtil.generateError(err);
     return res.status(code).json({ error, code });
   }
 };
 
-userCtr.login = async (req, res) => {
+itemCtr.createItem = async (req, res) => {
   try {
-    const result = await userUtils.login(req.body);
-    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_USER_LOGIN_SUCCESS') });
+    const result = await itemUtils.createItem({ body: req.body, user: req.user });
+    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_ITEM_CREATED') });
     return res.status(STANDARD.SUCCESS).json(data);
   } catch (err) {
-    logger.error('[ERROR] From Main login API catch', err);
+    logger.error('[ERROR] From Main createItem API catch', err);
     const { code, error } = errorUtil.generateError(err);
     return res.status(code).json({ error, code });
   }
 };
 
+itemCtr.editItem = async (req, res) => {
+  try {
+    const result = await itemUtils.editItem({ body: req.body, user: req.user });
+    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_ITEM_UPDATED') });
+    return res.status(STANDARD.SUCCESS).json(data);
+  } catch (err) {
+    logger.error('[ERROR] From Main editItem API catch', err);
+    const { code, error } = errorUtil.generateError(err);
+    return res.status(code).json({ error, code });
+  }
+};
 
-module.exports = userCtr;
+itemCtr.editItem = async (req, res) => {
+  try {
+    const result = await itemUtils.editItem({ body: req.body, user: req.user });
+    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_ITEM_UPDATED') });
+    return res.status(STANDARD.SUCCESS).json(data);
+  } catch (err) {
+    logger.error('[ERROR] From Main editItem API catch', err);
+    const { code, error } = errorUtil.generateError(err);
+    return res.status(code).json({ error, code });
+  }
+};
+
+itemCtr.deleteItem = async (req, res) => {
+  try {
+    await itemUtils.deleteItem({ body: req.body, user: req.user });
+    const data = responseBuilder.successWithData({ msg: req.t('MSG_ITEM_DELETED') });
+    return res.status(STANDARD.SUCCESS).json(data);
+  } catch (err) {
+    logger.error('[ERROR] From Main deleteItem API catch', err);
+    const { code, error } = errorUtil.generateError(err);
+    return res.status(code).json({ error, code });
+  }
+};
+
+module.exports = itemCtr;

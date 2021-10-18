@@ -1,16 +1,16 @@
 const errorUtil = require('../../../helper/errorUtil');
-const userUtils = require('./userUtils');
+const collectionUtils = require('./collectionUtils');
 const logger = require('../../../helper/logger');
 const responseBuilder = require('../../../helper/responseBuilder');
 
 const { STANDARD } = require('../../../constants/common');
 
-const userCtr = {};
+const collectionCtr = {};
 
 // Create/Complete User Profile 
-userCtr.createMentee = async (req, res) => {
+collectionCtr.createMentee = async (req, res) => {
   try {
-    const result = await userUtils.createMentee(req.body);
+    const result = await collectionUtils.createMentee(req.body);
     const data = responseBuilder.successWithData(result);
     return res.status(STANDARD.SUCCESS).json(data);
   } catch (err) {
@@ -20,9 +20,9 @@ userCtr.createMentee = async (req, res) => {
   }
 };
 
-userCtr.login = async (req, res) => {
+collectionCtr.login = async (req, res) => {
   try {
-    const result = await userUtils.login(req.body);
+    const result = await collectionUtils.login(req.body);
     const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_USER_LOGIN_SUCCESS') });
     return res.status(STANDARD.SUCCESS).json(data);
   } catch (err) {
@@ -33,4 +33,4 @@ userCtr.login = async (req, res) => {
 };
 
 
-module.exports = userCtr;
+module.exports = collectionCtr;

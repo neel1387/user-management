@@ -1,24 +1,39 @@
 const express = require('express');
-const userCtr = require('./userController');
-const userValidator = require('./userValidationRules');
+const collectionCtr = require('./collectionController');
+const collectionValidator = require('./collectionValidationRules');
 const { validationHandler } = require('../../../helper/validate');
-const userMiddleware = require('./userMiddleware');
+const collectionMiddleware = require('./collectionMiddleware');
 
-const userRouter = express.Router();
+const collectionRouter = express.Router();
 
-// Create Mentee
-// const createMentee = [
-//   userValidator.createMenteeValidator(),
-//   validationHandler,
-//   userCtr.createMentee,
-// ];
-// userRouter.post('/create', createMentee);
+// List of Collection
+const listCollection = [
+  collectionCtr.listCollection,
+];
+collectionRouter.get('/list', listCollection);
 
-// const login = [
-//   userValidator.loginValidator(),
-//   validationHandler,
-//   userCtr.login,
-// ];
-// userRouter.post('/login', login);
+// Create Collection
+const createCollection = [
+  collectionValidator.createCollectionValidator(),
+  validationHandler,
+  collectionCtr.createCollection,
+];
+collectionRouter.post('/create', createCollection);
 
-module.exports = userRouter;
+// Edit Collection
+const editCollection = [
+  collectionValidator.editCollectionValidator(),
+  validationHandler,
+  collectionCtr.editCollection,
+];
+collectionRouter.put('/edit', editCollection);
+
+// Delete Collection
+const deleteCollection = [
+  collectionValidator.deleteCollectionValidator(),
+  validationHandler,
+  collectionCtr.deleteCollection,
+];
+collectionRouter.delete('/delete', deleteCollection);
+
+module.exports = collectionRouter;

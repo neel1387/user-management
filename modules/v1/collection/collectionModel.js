@@ -1,18 +1,17 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 
 const schemaEntity = {
-	email: {
+	name: {
         type: String,
         default: null
-	},
-	roles: {
-		type: Object,
-		ref: 'Role'
-	},	
+	}
 };
 
-const UserSchema = new Schema(schemaEntity, { timestamps: true });
+const CollectionSchema = new Schema(schemaEntity, { timestamps: true });
 
-mongoose.model('User', UserSchema);
-module.exports = exports = mongoose.model('User', UserSchema);
+mongoose.model('Collection', CollectionSchema);
+CollectionSchema.plugin(aggregatePaginate);
+
+module.exports = exports = mongoose.model('Collection', CollectionSchema);

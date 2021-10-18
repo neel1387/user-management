@@ -3,5 +3,27 @@
     "ERR_BAD_REQUEST": "Bad Request",
     "ERR_PERMISSION_ERROR": "You are unauthorized user",
     "ERR_USER_NOT_FOUND": "User is not verfied or deactivated by administrator",
-    "MSG_USER_LOGIN_SUCCESS": "You are successfully logged in"    
+
+    "ERR_COLLECTION_NAME_REQUIRED": "Collection name is required",
+    "ERR_COLLECTION_ALREADY_EXIST": "Collection with same name already exists, please choose another one",
+    "ERR_COLLECTION_NOT_FOUND": "Collection not found",
+    "ERR_COLLECTION_ID_REQUIRED": "Collection is invalid",
+
+    "ERR_ITEM_NAME_REQUIRED": "Item name is required",
+    "ERR_ITEM_ALREADY_EXIST": "Item with same name already exists, please choose another one",
+    "ERR_ITEM_NOT_FOUND": "Item not found",
+    "ERR_ITEM_ID_REQUIRED": "Item is invalid",
+    
+    "ERR_PARENT_ID_REQUIRED": "Parent id is required",
+    "ERR_PARENT_NOT_FOUND": "Parent not found",
+    "ERR_PARENT_ALREADY_OCCPIED": "Parent already occupied for another item",
+
+    "MSG_USER_LOGIN_SUCCESS": "You are successfully logged in",
+    "MSG_COLLECTION_CREATED": "Collection created successfully",
+    "MSG_COLLECTION_UPDATED": "Collection updated successfully",
+    "MSG_COLLECTION_DELETED": "Collection deleted successfully",
+
+    "MSG_ITEM_CREATED": "Item created successfully",
+    "MSG_ITEM_UPDATED": "Item updated successfully",
+    "MSG_ITEM_DELETED": "Item deleted successfully"
 }

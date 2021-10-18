@@ -1,24 +1,38 @@
 const express = require('express');
-const userCtr = require('./userController');
-const userValidator = require('./userValidationRules');
+const itemCtr = require('./itemController');
+const itemValidator = require('./itemValidationRules');
 const { validationHandler } = require('../../../helper/validate');
-const userMiddleware = require('./userMiddleware');
 
-const userRouter = express.Router();
+const itemRouter = express.Router();
 
-// Create Mentee
-// const createMentee = [
-//   userValidator.createMenteeValidator(),
-//   validationHandler,
-//   userCtr.createMentee,
-// ];
-// userRouter.post('/create', createMentee);
+// List of Item
+const listItem = [
+    itemCtr.listItem,
+];
+itemRouter.get('/list', listItem);
 
-// const login = [
-//   userValidator.loginValidator(),
-//   validationHandler,
-//   userCtr.login,
-// ];
-// userRouter.post('/login', login);
+// Create Item
+const createItem = [
+    itemValidator.createItemValidator(),
+    validationHandler,
+    itemCtr.createItem,
+];
+itemRouter.post('/create', createItem);
 
-module.exports = userRouter;
+// Edit Item
+const editItem = [
+    itemValidator.editItemValidator(),
+    validationHandler,
+    itemCtr.editItem,
+];
+itemRouter.put('/edit', editItem);
+
+// Delete Item
+const deleteItem = [
+    itemValidator.deleteItemValidator(),
+    validationHandler,
+    itemCtr.deleteItem,
+];
+itemRouter.delete('/delete', deleteItem);
+
+module.exports = itemRouter;
