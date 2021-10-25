@@ -14,8 +14,7 @@ const schemaEntity = {
 };
 
 const ItemSchema = new Schema(schemaEntity, { timestamps: true });
-
-mongoose.model('Item', ItemSchema);
 ItemSchema.plugin(aggregatePaginate);
+mongoose.model('Item', ItemSchema);
 
 module.exports = exports = mongoose.model('Item', ItemSchema);

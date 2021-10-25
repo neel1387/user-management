@@ -4,8 +4,10 @@ const { Schema } = mongoose;
 const schemaEntity = {
 	email: {
         type: String,
-        default: null
-	},	
+	},
+	password: {
+        type: String,
+	},
 	roles: [{
 		roleId: {
 			type: Schema.ObjectId,

@@ -4,7 +4,7 @@ const logger = require('./logger');
 const jwtUtil = {};
 
 jwtUtil.getAuthToken = (data) => {
-  const encoded = jwt.sign(data, process.env.JWT_PRIVATE_KEY);
+  const encoded = jwt.sign(data, process.env.JWT_PRIVATE_KEY, { expiresIn: '24h' });
   return encoded;
 };
 

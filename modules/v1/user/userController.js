@@ -19,6 +19,18 @@ userCtr.listUser = async (req, res) => {
   }
 };
 
+userCtr.login = async (req, res) => {
+  try {
+    const result = await userUtils.login({ body: req.body });
+    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_USER_LOGIN_SUCCESS') });
+    return res.status(STANDARD.SUCCESS).json(data);
+  } catch (err) {
+    logger.error('[ERROR] From Main login API catch', err);
+    const { code, error } = errorUtil.generateError(err);
+    return res.status(code).json({ error, code });
+  }
+};
+
 userCtr.createUser = async (req, res) => {
   try {
     const result = await userUtils.createUser({ body: req.body, user: req.user });
@@ -50,6 +62,18 @@ userCtr.deleteUser = async (req, res) => {
     return res.status(STANDARD.SUCCESS).json(data);
   } catch (err) {
     logger.error('[ERROR] From Main deleteUser API catch', err);
+    const { code, error } = errorUtil.generateError(err);
+    return res.status(code).json({ error, code });
+  }
+};
+
+userCtr.assignGroup = async (req, res) => {
+  try {
+    const result = await userUtils.assignGroup({ body: req.body, user: req.user });
+    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_USER_GROUP_ASSSIGNED') });
+    return res.status(STANDARD.SUCCESS).json(data);
+  } catch (err) {
+    logger.error('[ERROR] From Main assignGroup API catch', err);
     const { code, error } = errorUtil.generateError(err);
     return res.status(code).json({ error, code });
   }

@@ -8,40 +8,53 @@ const userRouter = express.Router();
 
 // List of User
 const listUser = [
+    userMiddleware.isAuthenticatedUser,
     userCtr.listUser,
 ];
 userRouter.get('/list', listUser);
 
 // Login
 const login = [
-    itemValidator.loginValidator(),
+    userValidator.loginValidator(),
     validationHandler,
     userCtr.login,
 ];
-userRouter.post('/create', login);
+userRouter.post('/login', login);
 
 // Create User
 const createUser = [
-    itemValidator.createUserValidator(),
+    userValidator.createUserValidator(),
     validationHandler,
+    userMiddleware.isAuthenticatedGlobalManager,
     userCtr.createUser,
 ];
 userRouter.post('/create', createUser);
 
 // Edit User
 const editUser = [
-    itemValidator.editUserValidator(),
+    userValidator.editUserValidator(),
     validationHandler,
+    userMiddleware.isAuthenticatedGlobalManager,
     userCtr.editUser,
 ];
 userRouter.put('/edit', editUser);
 
 // Delete User
 const deleteUser = [
-    itemValidator.deleteUserValidator(),
+    userValidator.deleteUserValidator(),
     validationHandler,
+    userMiddleware.isAuthenticatedGlobalManager,
     userCtr.deleteUser,
 ];
 userRouter.delete('/delete', deleteUser);
+
+// Assign Group
+const assignGroup = [
+    userValidator.assignGroupValidator(),
+    validationHandler,
+    userMiddleware.isAuthenticatedGlobalManager,
+    userCtr.assignGroup,
+];
+userRouter.post('/assignGroup', assignGroup);
 
 module.exports = userRouter;

@@ -10,8 +10,7 @@ const schemaEntity = {
 };
 
 const CollectionSchema = new Schema(schemaEntity, { timestamps: true });
-
-mongoose.model('Collection', CollectionSchema);
 CollectionSchema.plugin(aggregatePaginate);
+mongoose.model('Collection', CollectionSchema);
 
 module.exports = exports = mongoose.model('Collection', CollectionSchema);

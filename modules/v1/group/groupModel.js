@@ -16,8 +16,7 @@ const schemaEntity = {
 };
 
 const GroupSchema = new Schema(schemaEntity, { timestamps: true });
-
-mongoose.model('Group', GroupSchema);
 GroupSchema.plugin(aggregatePaginate);
+mongoose.model('Group', GroupSchema);
 
 module.exports = exports = mongoose.model('Group', GroupSchema);
