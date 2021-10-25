@@ -13,7 +13,7 @@ middleware.isAuthenticatedUser = async (req, res, next) => {
     await middleware.authenticateUser(req, false);
     return next();
   } catch (err) {
-    logger.error('[ERROR] From isAuthenticatedUser in userMiddleware', err);
+    logger.error('[ERROR] From isAuthenticatedUser in groupMiddleware', err);
     const { code, error, status } = errorUtil.generateError(err);
     return res.status(code).json({ error, code, status });
   }
@@ -46,31 +46,35 @@ middleware.isGroupAccess = async (req, res, next) => {
       throw authError;
     }
     const { groupId } = req.body;
-    const gloablRoleId = await Role.findOne({ role: "globalManager" });
+    const globalRoleId = await Role.findOne({ role: "globalManager" });
     const condition = {
       _id: userId,
-      "roles.roleId": gloablRoleId._id
+      "roles.roleId": globalRoleId._id
     };
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      throw errorObj;
+    }
+    const roleIds = user.roles.map((r) => { return r.roleId.toString(); });
+    const globalRole = globalRoleId._id.toString();
+    if (roleIds.includes(globalRole)) {
+      return next()
+    }
     if (groupId) {
       const groupRoles = await Role.findOne({ groupId, role: "manager" });
-      if (groupRoles ) {
-        const roleids = [groupRoles._id, gloablRoleId];
+      if (groupRoles) {
+        const roleids = [groupRoles._id, globalRoleId];
         condition["roles.roleId"] = { $in: roleids };
       } else {
         throw authError;
       }
     } else {
-      condition["roles.roleId"] = gloablRoleId._id;
-    }
-
-    const user = await User.findOne(condition);
-    if (!user) {
-      throw errorObj;
+      condition["roles.roleId"] = globalRoleId._id;
     }
     req.user = user;
     return next();
   } catch (err) {
-    logger.error('[ERROR] From isAuthenticatedGlobalManager in userMiddleware', err);
+    logger.error('[ERROR] From isGroupAccess in groupMiddleware', err);
     const { code, error, status } = errorUtil.generateError(err);
     return res.status(code).json({ error, code, status });
   }
@@ -116,7 +120,7 @@ middleware.authenticateUser = async (req) => {
     }
     return req;
   } catch (err) {
-    logger.error('[ERROR] From authenticateUser in userMiddleware', err);
+    logger.error('[ERROR] From authenticateUser in groupMiddleware', err);
     throw err;
   }
 };

@@ -10,7 +10,7 @@ const middleware = {};
 
 middleware.isAuthenticatedUser = async (req, res, next) => {
   try {
-    await middleware.authenticateUser(req, false, false);
+    await middleware.authenticateUser(req);
     return next();
   } catch (err) {
     logger.error('[ERROR] From isAuthenticatedUser in userMiddleware', err);
@@ -45,10 +45,10 @@ middleware.isAuthenticatedGlobalManager = async (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       throw authError;
     }
-    const gloablRoleId = await Role.findOne({ role: "globalManager" });
+    const globalRoleId = await Role.findOne({ role: "globalManager" });
     const condition = {
       _id: userId,
-      "roles.roleId": gloablRoleId._id
+      "roles.roleId": globalRoleId._id
     };
 
     const user = await User.findOne(condition);
@@ -64,29 +64,7 @@ middleware.isAuthenticatedGlobalManager = async (req, res, next) => {
   }
 };
 
-middleware.isAuthenticatedAdminUser = async (req, res, next) => {
-  try {
-    await middleware.authenticateUser(req, true, false);
-    return next();
-  } catch (err) {
-    logger.error('[ERROR] From isAuthenticatedAdminUser in userMiddleware', err);
-    const { code, error, status } = errorUtil.generateError(err);
-    return res.status(code).json({ error, code, status });
-  }
-};
-
-middleware.isOptionalAuthenticated = async (req, res, next) => {
-  try {
-    await middleware.authenticateUser(req, false, true);
-    return next();
-  } catch (err) {
-    logger.error('[ERROR] From isAuthenticatedAdminUser in userMiddleware', err);
-    const { code, error, status } = errorUtil.generateError(err);
-    return res.status(code).json({ error, code, status });
-  }
-};
-
-middleware.authenticateUser = async (req, isAdmin, isOptional) => {
+middleware.authenticateUser = async (req) => {
   try {
     const authError = {
       error: req.t('ERR_PERMISSION_ERROR'),
@@ -100,7 +78,7 @@ middleware.authenticateUser = async (req, isAdmin, isOptional) => {
     if (req.method === 'OPTIONS') {
       return next();
     }
-    if (!token && !isOptional) {
+    if (!token) {
       throw authError;
     }
     req.user = null;
@@ -113,15 +91,9 @@ middleware.authenticateUser = async (req, isAdmin, isOptional) => {
       if (!mongoose.Types.ObjectId.isValid(userId)) {
         throw authError;
       }
-
       const condition = {
         _id: userId
       };
-
-      if (isAdmin) {
-        condition.roles = ["user", "admin"];
-      }
-
       const user = await User.findOne(condition);
       if (!user) {
         throw errorObj;

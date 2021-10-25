@@ -8,6 +8,7 @@ const collectionRouter = express.Router();
 
 // List of Collection
 const listCollection = [
+  collectionMiddleware.isAuthenticatedUser,
   collectionCtr.listCollection,
 ];
 collectionRouter.get('/list', listCollection);
@@ -16,6 +17,7 @@ collectionRouter.get('/list', listCollection);
 const createCollection = [
   collectionValidator.createCollectionValidator(),
   validationHandler,
+  collectionMiddleware.isAuthenticatedUser,
   collectionCtr.createCollection,
 ];
 collectionRouter.post('/create', createCollection);
@@ -24,6 +26,7 @@ collectionRouter.post('/create', createCollection);
 const editCollection = [
   collectionValidator.editCollectionValidator(),
   validationHandler,
+  collectionMiddleware.isCollectionAccess,
   collectionCtr.editCollection,
 ];
 collectionRouter.put('/edit', editCollection);
@@ -32,6 +35,7 @@ collectionRouter.put('/edit', editCollection);
 const deleteCollection = [
   collectionValidator.deleteCollectionValidator(),
   validationHandler,
+  collectionMiddleware.isCollectionAccess,
   collectionCtr.deleteCollection,
 ];
 collectionRouter.delete('/delete', deleteCollection);
