@@ -14,9 +14,26 @@ const groupUtils = {};
 
 groupUtils.listGroup = async (obj) => {
     try {
-        const { queryParams } = obj;
-        const { page, limit } = utils.validatePaginate(queryParams, true);
+        const { queryParams, user } = obj;
+        const condition = [];
+        const result = {
+            groups: [],
+            total: 0,
+        };
+        const roleIds = user.roles.map((r) => { return r.roleId.toString(); });
+        const globalRoleId = await Role.findOne({ role: "globalManager" });
+        const globalRole = globalRoleId._id.toString();
+        if (!roleIds.includes(globalRole)) {
+            const roleDetails = await Role.find({ _id: { $in: roleIds } });
+            const groupIds = roleDetails.filter((r) => { return r.groupId; }).map((r) => { return r.groupId });
+            if (groupIds && groupIds.length) {
+                condition.push({ $match: { _id: { $in: groupIds } } });
+            } else {
+                return result;
+            }
+        }
         const querying = [
+            ...condition,
             {
                 $lookup: {
                     from: "roles",
@@ -51,13 +68,10 @@ groupUtils.listGroup = async (obj) => {
                 }
             }
         ];
+        const { page, limit } = utils.validatePaginate(queryParams, true);
         const options = { page, limit, allowDiskUse: true };
         const aggregate = Group.aggregate(querying).allowDiskUse(true);
         const groups = await Group.aggregatePaginate(aggregate, options);
-        const result = {
-            groups: [],
-            total: 0,
-        }
         if (groups && groups.totalDocs > 0) {
             result.groups = groups.docs;
             result.total = groups.totalDocs;

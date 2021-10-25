@@ -57,4 +57,13 @@ const assignGroup = [
 ];
 userRouter.post('/assignGroup', assignGroup);
 
+// Revoke Group
+const revokeGroup = [
+    userValidator.revokeGroupGroupValidator(),
+    validationHandler,
+    userMiddleware.isAuthenticatedGlobalManager,
+    userCtr.revokeGroup,
+];
+userRouter.post('/revokeGroup', revokeGroup);
+
 module.exports = userRouter;

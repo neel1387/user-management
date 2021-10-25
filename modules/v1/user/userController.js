@@ -79,4 +79,16 @@ userCtr.assignGroup = async (req, res) => {
   }
 };
 
+userCtr.revokeGroup = async (req, res) => {
+  try {
+    const result = await userUtils.revokeGroup({ body: req.body, user: req.user });
+    const data = responseBuilder.successWithData({ ...result, msg: req.t('MSG_USER_GROUP_REVOKED') });
+    return res.status(STANDARD.SUCCESS).json(data);
+  } catch (err) {
+    logger.error('[ERROR] From Main revokeGroup API catch', err);
+    const { code, error } = errorUtil.generateError(err);
+    return res.status(code).json({ error, code });
+  }
+};
+
 module.exports = userCtr;

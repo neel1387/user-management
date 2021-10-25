@@ -39,4 +39,11 @@ validationRules.assignGroupValidator = () => {
   ];
 };
 
+validationRules.revokeGroupGroupValidator = () => {
+  return [
+    check('userId', l10n.t('ERR_USER_ID_REQUIRED')).exists({ checkFalsy: true }).custom((value) => { return customValidators.isValidMongoID(value); }),
+    check('roleId', l10n.t('ERR_ROLE_ID_REQUIRED')).exists({ checkFalsy: true }).custom((value) => { return customValidators.isValidMongoID(value); })
+  ];
+};
+
 module.exports = validationRules;

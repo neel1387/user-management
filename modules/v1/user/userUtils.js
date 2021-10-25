@@ -13,10 +13,54 @@ const userUtils = {};
 userUtils.listUser = async (obj) => {
     try {
         const { queryParams } = obj;
-        const { limit, offset } = utils.validatePaginate(queryParams);
-        const total = await User.find().count();
-        const users = await User.find().sort('-_id').limit(limit).skip(offset);
-        return { total, users };
+        const result = {
+            users: [],
+            total: 0,
+        };
+        const querying = [
+            {
+                $lookup: {
+                    from: "roles",
+                    localField: "roles.roleId",
+                    foreignField: "_id",
+                    as: "role"
+                }
+            },
+            {
+                $lookup: {
+                    from: "groups",
+                    localField: "role.groupId",
+                    foreignField: "_id",
+                    as: "group"
+                }
+            },
+            {
+                $sort: {
+                    _id: -1
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    email: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    "group._id": 1,
+                    "group.name": 1,
+                    "role._id": 1,
+                    "role.role": 1,
+                }
+            }
+        ];
+        const { page, limit } = utils.validatePaginate(queryParams, true);
+        const options = { page, limit, allowDiskUse: true };
+        const aggregate = User.aggregate(querying).allowDiskUse(true);
+        const users = await User.aggregatePaginate(aggregate, options);
+        if (users && users.totalDocs > 0) {
+            result.users = users.docs;
+            result.total = users.totalDocs;
+        }
+        return result;
     } catch (error) {
         logger.error('[ERROR] From listUser in userUtils', error);
         throw error;
@@ -74,8 +118,12 @@ userUtils.createUser = async (obj) => {
 
 userUtils.editUser = async (obj) => {
     try {
-        const { body } = obj;
+        const { body, user } = obj;
         const { email, password, userId } = body;
+        if (userId === user._id.toString()) {
+            const errorObj = { code: commonConsts.ERROR400.CODE, error: l10n.t('ERR_NO_SELF_ACTION') };
+            throw errorObj;
+        }
         const isExist = await User.findOne({ _id: mongoose.Types.ObjectId(userId) });
         if (!isExist) {
             const errorObj = { code: commonConsts.ERROR400.CODE, error: l10n.t('ERR_USER_NOT_FOUND') };
@@ -107,7 +155,11 @@ userUtils.editUser = async (obj) => {
 userUtils.deleteUser = async (obj) => {
     try {
         const { body } = obj;
-        const { userId } = body;
+        const { userId, user } = body;
+        if (userId === user._id.toString()) {
+            const errorObj = { code: commonConsts.ERROR400.CODE, error: l10n.t('ERR_NO_SELF_ACTION') };
+            throw errorObj;
+        }
         const isExist = await User.findOne({ _id: userId });
         if (!isExist) {
             const errorObj = { code: commonConsts.ERROR400.CODE, error: l10n.t('ERR_USER_NOT_FOUND') };
@@ -123,8 +175,12 @@ userUtils.deleteUser = async (obj) => {
 
 userUtils.assignGroup = async (obj) => {
     try {
-        const { body } = obj;
+        const { body, user } = obj;
         const { userId, roleId } = body;
+        if (userId === user._id.toString()) {
+            const errorObj = { code: commonConsts.ERROR400.CODE, error: l10n.t('ERR_NO_SELF_ACTION') };
+            throw errorObj;
+        }
         const isUserExist = await User.findOne({ _id: mongoose.Types.ObjectId(userId) });
         if (!isUserExist) {
             const errorObj = { code: commonConsts.ERROR400.CODE, error: l10n.t('ERR_USER_NOT_FOUND') };
@@ -137,13 +193,44 @@ userUtils.assignGroup = async (obj) => {
         }
         const isRoleAlreadyAssigned = await User.findOne({ _id: mongoose.Types.ObjectId(userId), "roles.roleId": mongoose.Types.ObjectId(roleId) });
         if (isRoleAlreadyAssigned) {
-            logger.info('You have already assigned this role');  
+            logger.info('You have already assigned this role');
             return true;
         }
         await User.update({ _id: mongoose.Types.ObjectId(userId) }, { $push: { roles: { roleId: mongoose.Types.ObjectId(roleId) } } });
         return true;
     } catch (error) {
-        logger.error('[ERROR] From editUser in userUtils', error);
+        logger.error('[ERROR] From assignGroup in userUtils', error);
+        throw error;
+    }
+};
+
+userUtils.revokeGroup = async (obj) => {
+    try {
+        const { body, user } = obj;
+        const { userId, roleId } = body;
+        if (userId === user._id.toString()) {
+            const errorObj = { code: commonConsts.ERROR400.CODE, error: l10n.t('ERR_NO_SELF_ACTION') };
+            throw errorObj;
+        }
+        const isUserExist = await User.findOne({ _id: mongoose.Types.ObjectId(userId) });
+        if (!isUserExist) {
+            const errorObj = { code: commonConsts.ERROR400.CODE, error: l10n.t('ERR_USER_NOT_FOUND') };
+            throw errorObj;
+        }
+        const isRoleExist = await Role.findOne({ _id: mongoose.Types.ObjectId(roleId) });
+        if (!isRoleExist) {
+            const errorObj = { code: commonConsts.ERROR400.CODE, error: l10n.t('ERR_USER_ROLE_NOT_FOUND') };
+            throw errorObj;
+        }
+        const isRoleAlreadyAssigned = await User.findOne({ _id: mongoose.Types.ObjectId(userId), "roles.roleId": mongoose.Types.ObjectId(roleId) });
+        if (isRoleAlreadyAssigned) {
+            logger.info('You have already assigned this role');
+            await User.update({ _id: mongoose.Types.ObjectId(userId), "roles.roleId": mongoose.Types.ObjectId(roleId) }, { $pull: { "roles": { roleId: mongoose.Types.ObjectId(roleId) } } });
+            return true;
+        }
+        return true;
+    } catch (error) {
+        logger.error('[ERROR] From revokeGroup in userUtils', error);
         throw error;
     }
 };

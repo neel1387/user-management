@@ -8,8 +8,8 @@ const groupRouter = express.Router();
 
 // List of Group
 const listGroup = [
-    groupCtr.listGroup,
     groupMiddleware.isAuthenticatedUser,
+    groupCtr.listGroup,
 ];
 groupRouter.get('/list', listGroup);
 

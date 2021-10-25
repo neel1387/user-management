@@ -30,6 +30,7 @@
     "ERR_USER_NO_GROUP_ACCESS": "You can't perform an action on this group",
     "ERR_USER_NO_COLLECTION_ACCESS": "You can't perform an action on this collection",
     "ERR_USER_NO_ITEM_ACCESS": "You can't perform an action on this item",
+    "ERR_NO_SELF_ACTION": "You can't perform an action by yourself",
     "MSG_USER_LOGIN_SUCCESS": "You are successfully logged in",
     "MSG_COLLECTION_CREATED": "Collection created successfully",
     "MSG_COLLECTION_UPDATED": "Collection updated successfully",
@@ -43,5 +44,6 @@
     "MSG_USER_CREATED": "User created successfully",
     "MSG_USER_UPDATED": "User updated successfully",
     "MSG_USER_DELETED": "User deleted successfully",
-    "MSG_USER_GROUP_ASSSIGNED": "User assigned to group successfully"
+    "MSG_USER_GROUP_ASSSIGNED": "User assigned to group successfully",
+    "MSG_USER_GROUP_REVOKED": "User access revoked for group successfully"
 }
