@@ -1,6 +1,7 @@
 const express = require('express');
 const groupCtr = require('./groupController');
 const groupValidator = require('./groupValidationRules');
+const groupMiddleware = require('./groupMiddleware');
 const { validationHandler } = require('../../../helper/validate');
 
 const groupRouter = express.Router();
@@ -8,6 +9,7 @@ const groupRouter = express.Router();
 // List of Group
 const listGroup = [
     groupCtr.listGroup,
+    groupMiddleware.isAuthenticatedUser,
 ];
 groupRouter.get('/list', listGroup);
 
@@ -15,6 +17,7 @@ groupRouter.get('/list', listGroup);
 const createGroup = [
     groupValidator.createGroupValidator(),
     validationHandler,
+    groupMiddleware.isAuthenticatedUser,
     groupCtr.createGroup,
 ];
 groupRouter.post('/create', createGroup);
@@ -23,6 +26,7 @@ groupRouter.post('/create', createGroup);
 const editGroup = [
     groupValidator.editGroupValidator(),
     validationHandler,
+    groupMiddleware.isGroupAccess,
     groupCtr.editGroup,
 ];
 groupRouter.put('/edit', editGroup);
@@ -31,6 +35,7 @@ groupRouter.put('/edit', editGroup);
 const deleteGroup = [
     groupValidator.deleteGroupValidator(),
     validationHandler,
+    groupMiddleware.isGroupAccess,
     groupCtr.deleteGroup,
 ];
 groupRouter.delete('/delete', deleteGroup);

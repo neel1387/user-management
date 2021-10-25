@@ -5,7 +5,7 @@ const utils = require('../../../helper/utils');
 const Group = require('./groupModel');
 const Collection = require('../collection/collectionModel');
 const User = require('../user/userModel');
-const Roles = require('../user/roleModel');
+const Role = require('../user/roleModel');
 const mongoose = require('mongoose');
 const l10n = require('jm-ez-l10n');
 const _ = require('lodash');
@@ -33,12 +33,6 @@ groupUtils.listGroup = async (obj) => {
                     as: "collection"
                 }
             },
-            {
-                $unwind: {
-                  path: '$collection',
-                  preserveNullAndEmptyArrays: true
-                }
-              },
             {
                 $sort: {
                     _id: -1
@@ -77,7 +71,7 @@ groupUtils.listGroup = async (obj) => {
 
 groupUtils.createGroup = async (obj) => {
     try {
-        const { body } = obj;
+        const { body, user } = obj;
         const { name, collectionIds } = body;
         const isExist = await Group.findOne({ name });
         if (isExist) {
@@ -106,7 +100,10 @@ groupUtils.createGroup = async (obj) => {
         const rolesObj = groupRoles.map((g) => {
             return { role: g, groupId };
         });
-        await Roles.insertMany(rolesObj);
+        await Role.insertMany(rolesObj);
+        // Assign a manager role to the group creator 
+        const managerRole = await Role.findOne({ groupId, role: "manager" });
+        await User.update({ _id: mongoose.Types.ObjectId(user._id) }, { $push: { roles: { roleId: mongoose.Types.ObjectId(managerRole._id) } } });
         return GroupInfo._doc;
     } catch (error) {
         logger.error('[ERROR] From createGroup in groupUtils', error);
@@ -167,7 +164,7 @@ groupUtils.deleteGroup = async (obj) => {
             const errorObj = { code: commonConsts.ERROR400.CODE, error: l10n.t('ERR_GROUP_NOT_FOUND') };
             throw errorObj;
         }
-        const getRoles = await Roles.find({ groupId: mongoose.Types.ObjectId(groupId) });
+        const getRoles = await Role.find({ groupId: mongoose.Types.ObjectId(groupId) });
         const roleIds = getRoles.map((g) => { return g._id; });
         const userRoles = [];
         const groupRoles = [];
@@ -177,7 +174,7 @@ groupUtils.deleteGroup = async (obj) => {
         });
         await Promise.all(userRoles);
         roleIds.forEach((r) => {
-            const deleteGroupRole = Roles.remove({ _id: mongoose.Types.ObjectId(r) });;
+            const deleteGroupRole = Role.remove({ _id: mongoose.Types.ObjectId(r) });;
             groupRoles.push(deleteGroupRole);
         });
         await Promise.all(groupRoles);
