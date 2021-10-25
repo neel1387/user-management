@@ -8,7 +8,7 @@ const seedUtil = {};
 // It will add a globalManager default user if not present
 seedUtil.addGlobalManager = async () => {
     try {
-        const globalManagerEmail = process.env.globalManagerEmail || "neel@yopmail.com";
+        const globalManagerEmail = process.env.globalManagerEmail || "master@yopmail.com";
         const globalManager = await Role.findOne({ role: 'globalManager' });
         let globalManagerRoleId = null;
         if (!globalManager) {
